@@ -1,0 +1,31 @@
+{
+  "name": "StoreBook",
+  "version": "1.0.0",
+  "description": "A simple RESTful inventory management REST API",
+  "main": "build/index.js",
+  "author": "Arijit Dasgupta <arijit.rivalslayer@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "@types/express": "^4.0.37",
+    "@types/pg": "^7.1.1",
+    "body-parser": "^1.18.1",
+    "cors": "^2.8.4",
+    "express": "^4.15.4",
+    "express-logging": "^1.1.1",
+    "inversify": "^4.3.0",
+    "inversify-binding-decorators": "^3.0.0",
+    "logops": "^2.1.0",
+    "moment": "^2.18.1",
+    "nodemon": "^1.12.1",
+    "pg": "^7.3.0",
+    "reflect-metadata": "^0.1.10",
+    "ts-node": "^3.3.0",
+    "tsc": "^1.20150623.0",
+    "typescript": "^2.5.2"
+  },
+  "scripts": {
+    "start": "tsc; node ./build/index.js",
+    "build": "tsc",
+    "watch": "nodemon --watch src --exec \"ts-node ./src/index.ts\""
+  }
+}
