@@ -6,7 +6,7 @@ import { Pool } from 'pg';
 
 import * as interfaces from './interfaces';
 import { container } from './inversify.config';
-import { TYPES } from './TYPES';
+import { TYPES } from './types';
 
 const app = express();
 
