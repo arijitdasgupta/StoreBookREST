@@ -2,6 +2,7 @@ import { injectable, inject } from 'inversify';
 import { SHA256Utils } from '../utils/SHA256Utils';
 import { PostgreSQL } from '../Db/PostgreSQL';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
+import { IUserObjectCreate } from '../services/UsersService';
 import { TYPES } from '../types';
 
 @injectable()
@@ -68,7 +69,7 @@ export class UsersRepository {
         });
     };
 
-    createUser = (userObject:any):Promise<any[]> => {
+    createUser = (userObject:IUserObjectCreate):Promise<any[]> => {
         return this.postgreSQL.pool.connect().then((client) => {
             return client.query(`INSERT INTO USERS (username, passwd, active, role) VALUES($1, $2, $3, $4) RETURNING ${this.returningColumns}`, [
                 userObject.username, 

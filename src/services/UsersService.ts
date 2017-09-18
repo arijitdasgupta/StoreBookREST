@@ -15,7 +15,7 @@ interface IUserObject {
     role: 'ADMIN' | 'MANAGER' | 'OPERATOR';
 }
 
-interface IUserObjectCreate {
+export interface IUserObjectCreate {
     username: string;
     password: string;
     role: 'ADMIN' | 'MANAGER' | 'OPERATOR';
@@ -23,6 +23,8 @@ interface IUserObjectCreate {
 
 @injectable()
 export class UsersService {
+    // Object validations should also go in this class...
+
     usersRepository: UsersRepository;
 
     constructor(
@@ -39,14 +41,6 @@ export class UsersService {
             role: user.role
         } as IUserObject;
     }
-
-    // CREATE TABLE USERS (
-    //     id serial not null,
-    //     username varchar(256) unique,
-    //     passwd varchar(64),
-    //     created timestamp default current_timestamp,
-    //     active BOOLEAN
-    //   );
 
     getAllUsers = ():Promise<IUserObject[]> => {
         return this.usersRepository.getAllUsers().then(rows => {
