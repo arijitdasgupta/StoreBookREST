@@ -74,7 +74,7 @@ export class UsersService {
             return objectSpecs.map(i => i.objectKey).filter(key => key === userObjectKey)[0];
         })
         .map(key => {
-            return _.assign({}, _.filter(objectSpecs, spec => spec.objectKey === key)[0], {value: userObject[key]});
+            return _.assign({}, objectSpecs.filter(spec => spec.objectKey === key)[0], {value: userObject[key]});
         })
         .reduce((acc, keyMapperAndValue:IUserUpdateSpec & {value:any}, index) => {
             return {
@@ -125,5 +125,11 @@ export class UsersService {
         }).then((data) => {
             return data.rows.map(this.userMapper)[0];
         });
+    }
+
+    deleteUser = (userId:number):Promise<boolean> => {
+        return this.postgreSQL.pool.connect().then((client) => {
+            return client.query('DELETE FROM USERS WHERE id=$1', [userId]);
+        }).then(res => true);
     }
 }

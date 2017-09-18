@@ -22,6 +22,7 @@ export class UsersController implements interfaces.IController {
         this.application.get('/users/:id', this.get);
         this.application.post('/users', this.post);
         this.application.put('/users/:id', this.update);
+        this.application.delete('/users/:id', this.delete);
     }
 
     private getAll:express.RequestHandler = (request, response) => {
@@ -68,6 +69,20 @@ export class UsersController implements interfaces.IController {
 
     private update:express.RequestHandler = (request, response) => {
         this.usersService.updateUser(parseInt(request.params.id), request.body).then((res) => {
+            response.send({
+                statusCode: 200,
+                data: res
+            });
+        }).catch((e) => {
+            response.send({
+                statusCode: 500,
+                data: e
+            });
+        });
+    }
+
+    private delete:express.RequestHandler = (request, response) => {
+        this.usersService.deleteUser(parseInt(request.params.id)).then((res) => {
             response.send({
                 statusCode: 200,
                 data: res
