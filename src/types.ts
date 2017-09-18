@@ -8,7 +8,10 @@ const TYPES = {
     UsersRepository: 'UsersRepository',
     ItemsRepository: 'ItemsRepository',
     ItemsService: 'ItemsService',
-    ItemsController: 'ItemsController'
+    ItemsController: 'ItemsController',
+    TransactionsController: 'TransactionsController',
+    TransactionsService: 'TransactionsService',
+    TransactionsRepository: 'TranscationsRepository'
 };
 
 export { TYPES };

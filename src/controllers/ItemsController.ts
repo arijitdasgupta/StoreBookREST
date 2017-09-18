@@ -21,6 +21,7 @@ export class ItemsController implements interfaces.IController {
         this.application.get('/items', this.getAll);
         this.application.get('/items/:id', this.get);
         this.application.post('/items', this.create);
+        this.application.put('/items/:id', this.update);
         this.application.delete('/items/:id', this.delete);
         this.application.get('/items-trash', this.getDeletedAll);
     }
@@ -55,6 +56,20 @@ export class ItemsController implements interfaces.IController {
 
     get:express.RequestHandler = (request, response) => {
         this.itemsService.getItem(parseInt(request.params.id)).then((res) => {
+            response.send({
+                statusCode: 200,
+                data: res
+            });
+        }).catch((e) => {
+            response.send({
+                statusCode: 500,
+                data: e
+            });
+        });
+    }
+
+    update:express.RequestHandler = (request, response) => {
+        this.itemsService.updateItem(request.params.id, request.body).then((res) => {
             response.send({
                 statusCode: 200,
                 data: res

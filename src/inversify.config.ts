@@ -12,6 +12,9 @@ import { UsersRepository } from "./repositories/UsersRepository";
 import { ItemsRepository } from "./repositories/ItemsRepository";
 import { ItemsService } from "./services/ItemsService";
 import { ItemsController } from "./controllers/ItemsController";
+import { TransactionsController } from "./controllers/TransactionsController";
+import { TransactionsService } from "./services/TransactionsService";
+import { TransactionsRepository } from "./repositories/TransactionsRepository";
 
 const container = new Container();
 container.bind<PostgreSQL>(TYPES.PostgreSQL).to(PostgreSQL).inSingletonScope();
@@ -22,6 +25,9 @@ container.bind<UpdateQueryUtils>(TYPES.UpdateQueryUtils).to(UpdateQueryUtils).in
 container.bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 container.bind<ItemsRepository>(TYPES.ItemsRepository).to(ItemsRepository).inSingletonScope();
 container.bind<ItemsService>(TYPES.ItemsService).to(ItemsService).inSingletonScope();
-container.bind<ItemsController>(TYPES.ItemsController).to(ItemsController).inSingletonScope();
+container.bind<interfaces.IController>(TYPES.ItemsController).to(ItemsController).inSingletonScope();
+container.bind<TransactionsService>(TYPES.TransactionsService).to(TransactionsService).inSingletonScope();
+container.bind<TransactionsRepository>(TYPES.TransactionsRepository).to(TransactionsRepository).inSingletonScope();
+container.bind<interfaces.IController>(TYPES.TransactionsController).to(TransactionsController).inSingletonScope();
 
 export { container };

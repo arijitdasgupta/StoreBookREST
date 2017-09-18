@@ -18,9 +18,11 @@ app.use(cors({origin: true}));
 
 const usersController = container.get<interfaces.IController>(TYPES.UsersController);
 const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);
+const transcationsController = container.get<interfaces.IController>(TYPES.TransactionsController);
 
 app.use(usersController.application);
 app.use(itemsController.application);
+app.use(transcationsController.application);
 
 // Just a status endpoint
 app.get('/status', (request:express.Request, response:express.Response) => {
