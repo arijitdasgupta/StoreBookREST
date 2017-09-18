@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 import { IController } from '../interfaces';
 import { TYPES } from '../types';
 import { TransactionsService } from '../services/TransactionsService';
+import { TransactionTypes } from '../enums/TransactionTypes';
 
 @injectable()
 export class TransactionsController implements IController {
@@ -21,6 +22,7 @@ export class TransactionsController implements IController {
         this.application.get('/transactions', this.getAll);
         this.application.get('/transactions/:id', this.get);
         this.application.post('/transactions', this.post);
+        this.application.get('/transaction-types', this.getTransactionTypes);
     }
 
     getAll:express.RequestHandler = (request, response) => {
@@ -63,5 +65,9 @@ export class TransactionsController implements IController {
                 data: e
             });
         });
+    }
+
+    getTransactionTypes:express.RequestHandler = (request, response) => {
+        response.send(TransactionTypes);
     }
 }
