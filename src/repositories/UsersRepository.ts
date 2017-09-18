@@ -4,12 +4,6 @@ import { PostgreSQL } from '../Db/PostgreSQL';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { TYPES } from '../types';
 
-export interface IUserObjectCreate {
-    username: string;
-    password: string;
-    role: 'ADMIN' | 'MANAGER' | 'OPERATOR';
-}
-
 @injectable()
 export class UsersRepository {
     sha256Utils:SHA256Utils;
@@ -25,6 +19,14 @@ export class UsersRepository {
     }
 
     private returningColumns = '*';
+
+    // CREATE TABLE USERS (
+    //     id serial not null,
+    //     username varchar(256) unique,
+    //     passwd varchar(64),
+    //     created timestamp default current_timestamp,
+    //     active BOOLEAN
+    //   );
 
     private userUpdateObjectSpecs:IUpdateSpec[] = [
         {
