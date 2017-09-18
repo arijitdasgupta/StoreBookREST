@@ -14,13 +14,14 @@ export interface ITransactionObject {
     description: string;
 }
 
-export interface ITransactionObjectJoined {
-    id: number;
-    itemId: number;
+export interface ITransactionObjectJoined extends ITransactionObject {
+    id?: number;
     changeType: string;
     quantity: number;
-    description: number;
-    
+    description: string;
+    itemId: number;
+    itemName: string;
+    itemDescription: string;
 }
 
 @injectable()
@@ -46,10 +47,22 @@ export class TransactionsService {
         return {
             id: transaction.id,
             itemId: transaction.item_id,
-            changeType: transaction.transcation_type,
+            changeType: transaction.transaction_type,
             quantity: transaction.transaction_amount,
             description: transaction.transaction_description
         };
+    }
+    
+    private transactionsMapperJoined = (transaction:any):ITransactionObjectJoined => {
+        return {
+            id: transaction.id,
+            itemId: transaction.item_id,
+            changeType: transaction.transaction_type,
+            description: transaction.transaction_description,
+            itemDescription: transaction.item_description,
+            quantity: transaction.transaction_amount,
+            itemName: transaction.item_name
+        }
     }
 
     private updateItemQuantity = (transaction:ITransactionObject):Promise<any> => {
@@ -66,11 +79,11 @@ export class TransactionsService {
     }
 
     getTransaction = (transactionId:number):Promise<ITransactionObject> => {
-        return this.transactionRepository.getTranscation(transactionId).then(rows => rows.map(this.transactionsMapper)[0]);
+        return this.transactionRepository.getTranscation(transactionId).then(rows => rows.map(this.transactionsMapperJoined)[0]);
     }
 
     getAllTransactions = ():Promise<ITransactionObject[]> => {
-        return this.transactionRepository.getAllTransactions().then(rows => rows.map(this.transactionsMapper));
+        return this.transactionRepository.getAllTransactions().then(rows => rows.map(this.transactionsMapperJoined));
     }
 
     // Three queries, if the system in use during a reboot, this will cause problems, no locking mechanism
@@ -78,7 +91,7 @@ export class TransactionsService {
         const transactionAmount = transactionObject.quantity;
         // TODO: Ugly, refactor
         if (transactionObject.quantity && !_.isNaN(parseFloat(transactionObject.quantity.toString()))) {
-            this.updateItemQuantity(transactionObject).then(_ => {
+            return this.updateItemQuantity(transactionObject).then(_ => {
                 return this.transactionRepository.postTransaction(transactionObject)
             }).then(transactions => {
                 return transactions.map(this.transactionsMapper)[0];

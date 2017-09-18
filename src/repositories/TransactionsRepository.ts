@@ -11,6 +11,7 @@ export class TransactionsRepository {
     private dbClient:Client;
 
     private returningColumns = '*';
+    private joiningColumns = ''
 
     constructor(@inject(TYPES.PostgreSQL) postgreSQL:PostgreSQL) {
         this.postgreSQL = postgreSQL;
@@ -28,12 +29,36 @@ export class TransactionsRepository {
     //     transaction_description varchar(500)
     //   );
 
+    // CREATE TABLE ITEMS (
+    //     id serial PRIMARY KEY not null,
+    //     item_name varchar(256) not null,
+    //     item_description varchar(500),
+    //     item_quantity real not null,
+    //     item_quantity_unit varchar(50) not null,
+    //     item_alert_threshold real,
+    //     item_product_code varchar(100),
+    //     created timestamp default current_timestamp,
+    //     deleted BOOLEAN default FALSE
+    //   );
+
+    // Refactor SQL query
+
     getAllTransactions = ():Promise<any> => {
-        return this.dbClient.query('SELECT * FROM TRANSACTIONS').then(data => data.rows);
+        return this.dbClient.query(`SELECT 
+            TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 
+            TRANSACTIONS.transaction_description as transaction_description,
+            ITEMS.item_name as item_name, ITEMS.item_description as item_description
+            FROM TRANSACTIONS 
+            INNER JOIN ITEMS ON (ITEMS.id = TRANSACTIONS.item_id)`).then(data => data.rows);
     }
 
     getTranscation = (transactionId: number):Promise<any> => {
-        return this.dbClient.query('SELECT * FROM TRANSACTIONS WHERE id=$1',[transactionId]).then(data => data.rows);
+        return this.dbClient.query(`SELECT 
+            TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 
+            TRANSACTIONS.transaction_description as transaction_description,
+            ITEMS.item_name as item_name, ITEMS.item_description as item_description
+            FROM TRANSACTIONS 
+            INNER JOIN ITEMS ON (ITEMS.id = TRANSACTIONS.item_id AND TRANSACTIONS.id=$1)`,[transactionId]).then(data => data.rows);
     }
 
     postTransaction = (transactionObject:ITransactionObject):Promise<any> => {
