@@ -10,6 +10,8 @@ import { SHA256Utils } from "./utils/SHA256Utils";
 import { UpdateQueryUtils } from "./utils/UpdateQueryUtils";
 import { UsersRepository } from "./repositories/UsersRepository";
 import { ItemsRepository } from "./repositories/ItemsRepository";
+import { ItemsService } from "./services/ItemsService";
+import { ItemsController } from "./controllers/ItemsController";
 
 const container = new Container();
 container.bind<PostgreSQL>(TYPES.PostgreSQL).to(PostgreSQL).inSingletonScope();
@@ -19,5 +21,7 @@ container.bind<interfaces.IController>(TYPES.UsersController).to(UsersController
 container.bind<UpdateQueryUtils>(TYPES.UpdateQueryUtils).to(UpdateQueryUtils).inSingletonScope();
 container.bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
 container.bind<ItemsRepository>(TYPES.ItemsRepository).to(ItemsRepository).inSingletonScope();
+container.bind<ItemsService>(TYPES.ItemsService).to(ItemsService).inSingletonScope();
+container.bind<ItemsController>(TYPES.ItemsController).to(ItemsController).inSingletonScope();
 
 export { container };

@@ -17,8 +17,10 @@ app.use(expressLogger(logger));
 app.use(cors({origin: true}));
 
 const usersController = container.get<interfaces.IController>(TYPES.UsersController);
+const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);
 
 app.use(usersController.application);
+app.use(itemsController.application);
 
 // Just a status endpoint
 app.get('/status', (request:express.Request, response:express.Response) => {

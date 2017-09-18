@@ -6,7 +6,9 @@ const TYPES = {
     SHA256Utils: 'SHA256Utils',
     UpdateQueryUtils: 'UpdateQueryUtils',
     UsersRepository: 'UsersRepository',
-    ItemsRepository: 'ItemsRepository'
+    ItemsRepository: 'ItemsRepository',
+    ItemsService: 'ItemsService',
+    ItemsController: 'ItemsController'
 };
 
 export { TYPES };

@@ -32,6 +32,7 @@ export class UsersService {
         this.usersRepository = usersRepository;
     }
 
+    // Maps table columned data to data
     private userMapper = (user:any):IUserObject => {
         return {
             id: user.id,
