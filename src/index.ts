@@ -18,7 +18,6 @@ const usersController = container.get<interfaces.IController>(TYPES.UsersControl
 
 app.use(usersController.application);
 
-
 // Just a status endpoint
 app.get('/status', (request:express.Request, response:express.Response) => {
     response.send('OK');
