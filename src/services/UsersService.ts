@@ -10,11 +10,13 @@ interface IUserObject {
     username: string;
     active: boolean;
     created: string;
+    role: 'ADMIN' | 'MANAGER' | 'OPERATOR';
 }
 
 interface IUserObjectCreate {
     username: string;
     password: string;
+    role: 'ADMIN' | 'MANAGER' | 'OPERATOR';
 }
 
 interface IUserUpdateSpec {
@@ -46,12 +48,13 @@ export class UsersService {
             id: user.id,
             username: user.username,
             active: user.active,
-            created: user.created
+            created: user.created,
+            role: user.role
         } as IUserObject;
     }
 
     private updateUserQueryGenerator = (userId: number, userObject:any):{queryString: string, queryParamArray: any[]} => {
-        // UPDATE USERS SET (passwd='Muuah') WHERE id=1 RETURNING id, username, active, created;
+        // UPDATE USERS SET (passwd='Muuah') WHERE id=1 RETURNING id, username, active, created, role;
         const objectSpecs:IUserUpdateSpec[] = [
             {
                 dbColumnName: 'username',
@@ -66,6 +69,11 @@ export class UsersService {
             {
                 dbColumnName: 'active',
                 objectKey: 'active',
+                mapper: (item) => item
+            },
+            {
+                dbColumnName: 'role',
+                objectKey: 'role',
                 mapper: (item) => item
             }
         ];
@@ -85,7 +93,7 @@ export class UsersService {
 
 
         return {
-            queryString: `UPDATE USERS SET ${setStringAndArray.setString} WHERE id=${userId} RETURNING id, username, active, created`,
+            queryString: `UPDATE USERS SET ${setStringAndArray.setString} WHERE id=${userId} RETURNING id, username, active, created, role`,
             queryParamArray: setStringAndArray.queryParamArray
         };
     };
@@ -100,10 +108,11 @@ export class UsersService {
 
     createUser = (userObject:IUserObjectCreate):Promise<IUserObject> => {
         return this.postgreSQL.pool.connect().then((client) => {
-            return client.query('INSERT INTO USERS (username, passwd, active) VALUES($1, $2, $3) RETURNING id, username, active, created', [
+            return client.query('INSERT INTO USERS (username, passwd, active, role) VALUES($1, $2, $3, $4) RETURNING id, username, active, created, role', [
                 userObject.username, 
                 this.sha256Utils.makeHashFromPassword(userObject.password), 
-                true])
+                true,
+                userObject.role]);
         }).then((data) => {
             const userObject = data.rows.map(this.userMapper)[0];
             return userObject;
@@ -112,7 +121,7 @@ export class UsersService {
 
     getUser = (userId:number):Promise<IUserObject> => {
         return this.postgreSQL.pool.connect().then((client) => {
-            return client.query('SELECT id, username, active, created FROM USERS WHERE id = $1', [userId])
+            return client.query('SELECT id, username, active, created, role FROM USERS WHERE id = $1', [userId])
         }).then((data) => {
             return data.rows.map(this.userMapper)[0];
         });
