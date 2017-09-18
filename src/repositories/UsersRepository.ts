@@ -1,4 +1,6 @@
 import { injectable, inject } from 'inversify';
+import { Client } from 'pg';
+
 import { SHA256Utils } from '../utils/SHA256Utils';
 import { PostgreSQL } from '../db/PostgreSQL';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
@@ -7,9 +9,10 @@ import { TYPES } from '../types';
 
 @injectable()
 export class UsersRepository {
-    sha256Utils:SHA256Utils;
-    postgreSQL:PostgreSQL;
-    updateQueryUtils: UpdateQueryUtils;
+    private sha256Utils:SHA256Utils;
+    private postgreSQL:PostgreSQL;
+    private updateQueryUtils: UpdateQueryUtils;
+    private dbClient: Client;
 
     constructor(@inject(TYPES.PostgreSQL) postgreSQL:PostgreSQL, 
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
@@ -17,6 +20,11 @@ export class UsersRepository {
         this.sha256Utils = sha256Utils;
         this.postgreSQL = postgreSQL;
         this.updateQueryUtils = updateQueryUtils;
+        
+        // Non-optimal way to connetcing
+        this.postgreSQL.pool.connect().then((client) => {
+            this.dbClient = client;
+        });
     }
 
     private returningColumns = '*';
@@ -62,44 +70,34 @@ export class UsersRepository {
     };
 
     getAllUsers = ():Promise<any[]> => {
-        return this.postgreSQL.pool.connect().then((client) => {
-            return client.query('SELECT * FROM USERS');
-        }).then((data) => {
+        return this.dbClient.query('SELECT * FROM USERS').then((data) => {
             return data.rows;
         });
     };
 
     createUser = (userObject:IUserObjectCreate):Promise<any[]> => {
-        return this.postgreSQL.pool.connect().then((client) => {
-            return client.query(`INSERT INTO USERS (username, passwd, active, role) VALUES($1, $2, $3, $4) RETURNING ${this.returningColumns}`, [
-                userObject.username, 
-                this.sha256Utils.makeHashFromPassword(userObject.password), 
-                true,
-                userObject.role]);
-        }).then((data) => {
-            return data.rows;
-        });
-    }
+        return this.dbClient.query(`INSERT INTO USERS (username, passwd, active, role) VALUES($1, $2, $3, $4) RETURNING ${this.returningColumns}`, [
+            userObject.username, 
+            this.sha256Utils.makeHashFromPassword(userObject.password), 
+            true,
+            userObject.role]).then((data) => {
+                return data.rows;
+            });
+    };
 
     updateUser = (userId:number, userObject: any):Promise<any[]> => {
-        return this.postgreSQL.pool.connect().then((client) => {
-            const { queryString, queryParamArray } = this.generateUpdateQuery(userId, userObject, this.userUpdateObjectSpecs)
-            return client.query(queryString, queryParamArray);
-        }).then((data) => {
+        const { queryString, queryParamArray } = this.generateUpdateQuery(userId, userObject, this.userUpdateObjectSpecs)
+        return this.dbClient.query(queryString, queryParamArray).then((data) => {
             return data.rows;
         });
     }
 
     deleteUser = (userId:number):Promise<any> => {
-        return this.postgreSQL.pool.connect().then((client) => {
-            return client.query('DELETE FROM USERS WHERE id=$1', [userId]);
-        });
+        return this.dbClient.query('DELETE FROM USERS WHERE id=$1', [userId]);
     }
 
     getUser = (userId:number):Promise<any[]> => {
-        return this.postgreSQL.pool.connect().then((client) => {
-            return client.query('SELECT id, username, active, created, role FROM USERS WHERE id = $1', [userId])
-        }).then((data) => {
+        return this.dbClient.query('SELECT id, username, active, created, role FROM USERS WHERE id = $1', [userId]).then((data) => {
             return data.rows;
         });
     }

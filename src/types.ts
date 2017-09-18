@@ -5,7 +5,8 @@ const TYPES = {
     PostgreSQL: 'PostgreSQL',
     SHA256Utils: 'SHA256Utils',
     UpdateQueryUtils: 'UpdateQueryUtils',
-    UsersRepository: 'UsersRepository'
+    UsersRepository: 'UsersRepository',
+    ItemsRepository: 'ItemsRepository'
 };
 
 export { TYPES };
