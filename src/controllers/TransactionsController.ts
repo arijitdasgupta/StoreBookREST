@@ -32,7 +32,7 @@ export class TransactionsController implements IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -46,7 +46,7 @@ export class TransactionsController implements IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -60,7 +60,7 @@ export class TransactionsController implements IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });

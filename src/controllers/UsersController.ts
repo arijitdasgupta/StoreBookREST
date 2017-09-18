@@ -32,7 +32,7 @@ export class UsersController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -46,7 +46,7 @@ export class UsersController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -60,7 +60,7 @@ export class UsersController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -69,12 +69,12 @@ export class UsersController implements interfaces.IController {
 
     private update:express.RequestHandler = (request, response) => {
         this.usersService.updateUser(parseInt(request.params.id), request.body).then((res) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 200,
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -83,12 +83,12 @@ export class UsersController implements interfaces.IController {
 
     private delete:express.RequestHandler = (request, response) => {
         this.usersService.deleteUser(parseInt(request.params.id)).then((res) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 200,
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });

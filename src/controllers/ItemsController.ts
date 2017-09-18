@@ -33,7 +33,7 @@ export class ItemsController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -47,7 +47,7 @@ export class ItemsController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -61,7 +61,7 @@ export class ItemsController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -75,7 +75,7 @@ export class ItemsController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -89,7 +89,7 @@ export class ItemsController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
@@ -103,7 +103,7 @@ export class ItemsController implements interfaces.IController {
                 data: res
             });
         }).catch((e) => {
-            response.send({
+            response.status(500).send({
                 statusCode: 500,
                 data: e
             });
