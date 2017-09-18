@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import * as _ from 'lodash';
 
-import { PostgreSQL } from '../Db/PostgreSQL';
+import { PostgreSQL } from '../db/PostgreSQL';
 import { TYPES } from '../types';
 import { SHA256Utils } from '../utils/SHA256Utils';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';

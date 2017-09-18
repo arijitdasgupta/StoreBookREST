@@ -1,6 +1,6 @@
 import { injectable, inject } from 'inversify';
 import { SHA256Utils } from '../utils/SHA256Utils';
-import { PostgreSQL } from '../Db/PostgreSQL';
+import { PostgreSQL } from '../db/PostgreSQL';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { IUserObjectCreate } from '../services/UsersService';
 import { TYPES } from '../types';
