@@ -1,1 +1,1 @@
-web: node --debug=5858 ./build/index.js
+web: yarn start -- --debug=5858
