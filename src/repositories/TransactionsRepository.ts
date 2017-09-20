@@ -26,7 +26,8 @@ export class TransactionsRepository {
     //     item_id integer REFERENCES ITEMS(id) not null,
     //     transaction_type varchar(20) not null,
     //     transaction_amount real not null,
-    //     transaction_description varchar(500)
+    //     transaction_description varchar(500),
+    //     transaction_time timestamp default current_timestamp,
     //   );
 
     // CREATE TABLE ITEMS (
@@ -46,7 +47,7 @@ export class TransactionsRepository {
     getAllTransactions = ():Promise<any> => {
         return this.dbClient.query(`SELECT 
             TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 
-            TRANSACTIONS.transaction_description as transaction_description, TRANSACTIONS.created as created,
+            TRANSACTIONS.transaction_description as transaction_description, TRANSACTIONS.transaction_time as transaction_time,
             ITEMS.item_name as item_name, ITEMS.item_description as item_description
             FROM TRANSACTIONS 
             INNER JOIN ITEMS ON (ITEMS.id = TRANSACTIONS.item_id)`).then(data => data.rows);
@@ -55,7 +56,7 @@ export class TransactionsRepository {
     getTranscation = (transactionId: number):Promise<any> => {
         return this.dbClient.query(`SELECT 
             TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 
-            TRANSACTIONS.transaction_description as transaction_description, TRANSACTIONS.created as created,
+            TRANSACTIONS.transaction_description as transaction_description, TRANSACTIONS.transaction_time as transaction_time,
             ITEMS.item_name as item_name, ITEMS.item_description as item_description
             FROM TRANSACTIONS 
             INNER JOIN ITEMS ON (ITEMS.id = TRANSACTIONS.item_id AND TRANSACTIONS.id=$1)`,[transactionId]).then(data => data.rows);

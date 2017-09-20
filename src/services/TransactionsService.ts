@@ -12,6 +12,7 @@ export interface ITransactionObject {
     changeType: string;
     quantity: number;
     description: string;
+    transactionTime: string;
 }
 
 export interface ITransactionObjectJoined extends ITransactionObject {
@@ -19,6 +20,7 @@ export interface ITransactionObjectJoined extends ITransactionObject {
     changeType: string;
     quantity: number;
     description: string;
+    transactionTime: string;
     itemId: number;
     itemName: string;
     itemDescription: string;
@@ -49,7 +51,8 @@ export class TransactionsService {
             itemId: transaction.item_id,
             changeType: transaction.transaction_type,
             quantity: transaction.transaction_amount,
-            description: transaction.transaction_description
+            description: transaction.transaction_description,
+            transactionTime: transaction.transaction_time
         };
     }
     
@@ -61,7 +64,8 @@ export class TransactionsService {
             description: transaction.transaction_description,
             itemDescription: transaction.item_description,
             quantity: transaction.transaction_amount,
-            itemName: transaction.item_name
+            itemName: transaction.item_name,
+            transactionTime: transaction.transaction_time
         }
     }
 
