@@ -46,7 +46,7 @@ export class TransactionsRepository {
     getAllTransactions = ():Promise<any> => {
         return this.dbClient.query(`SELECT 
             TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 
-            TRANSACTIONS.transaction_description as transaction_description,
+            TRANSACTIONS.transaction_description as transaction_description, TRANSACTIONS.created as created,
             ITEMS.item_name as item_name, ITEMS.item_description as item_description
             FROM TRANSACTIONS 
             INNER JOIN ITEMS ON (ITEMS.id = TRANSACTIONS.item_id)`).then(data => data.rows);
@@ -55,7 +55,7 @@ export class TransactionsRepository {
     getTranscation = (transactionId: number):Promise<any> => {
         return this.dbClient.query(`SELECT 
             TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 
-            TRANSACTIONS.transaction_description as transaction_description,
+            TRANSACTIONS.transaction_description as transaction_description, TRANSACTIONS.created as created,
             ITEMS.item_name as item_name, ITEMS.item_description as item_description
             FROM TRANSACTIONS 
             INNER JOIN ITEMS ON (ITEMS.id = TRANSACTIONS.item_id AND TRANSACTIONS.id=$1)`,[transactionId]).then(data => data.rows);
