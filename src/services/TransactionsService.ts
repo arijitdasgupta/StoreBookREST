@@ -12,7 +12,7 @@ export interface ITransactionObject {
     changeType: string;
     quantity: number;
     description: string;
-    transactionTime: string;
+    transactionTime?: string;
 }
 
 export interface ITransactionObjectJoined extends ITransactionObject {
