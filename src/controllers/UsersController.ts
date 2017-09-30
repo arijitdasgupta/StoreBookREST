@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 
 import * as interfaces from '../interfaces';
 import { UsersService } from '../services/UsersService';
+import { UserTypes } from '../enums/UserTypes';
 
 @injectable()
 export class UsersController implements interfaces.IController {
@@ -23,6 +24,7 @@ export class UsersController implements interfaces.IController {
         this.application.post('/users', this.post);
         this.application.put('/users/:id', this.update);
         this.application.delete('/users/:id', this.delete);
+        this.application.get('/user-roles', this.getAllUserRoles);
     }
 
     private getAll:express.RequestHandler = (request, response) => {
@@ -93,5 +95,9 @@ export class UsersController implements interfaces.IController {
                 data: e
             });
         });
+    }
+
+    private getAllUserRoles:express.RequestHandler = (request, response) => {
+        response.send(UserTypes);
     }
 }

@@ -27,6 +27,7 @@ app.use(transcationsController.application);
 // This will introduce 2 seconds of service outage, 
 // but on the other hand will ensure all the 
 // database connections are intact when the service actually start working
+// TODO: Fix actually...
 setTimeout(_ => {
     // Just a status endpoint
     app.get('/status', (request:express.Request, response:express.Response) => {
