@@ -94,7 +94,7 @@ export class UsersRepository {
 
     deleteUser = (userId:number):Promise<any> => {
         // TODO: This needs to update the active flag, not delete the actual row
-        return this.dbClient.query('DELETE FROM USERS WHERE id=$1', [userId]);
+        return this.dbClient.query('UPDATE USERS SET active=FALSE WHERE id=$1', [userId]);
     }
 
     getUser = (userId:number):Promise<any[]> => {

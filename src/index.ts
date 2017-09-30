@@ -24,11 +24,16 @@ app.use(usersController.application);
 app.use(itemsController.application);
 app.use(transcationsController.application);
 
-// Just a status endpoint
-app.get('/status', (request:express.Request, response:express.Response) => {
-    response.send('OK');
-});
+// This will introduce 2 seconds of service outage, 
+// but on the other hand will ensure all the 
+// database connections are intact when the service actually start working
+setTimeout(_ => {
+    // Just a status endpoint
+    app.get('/status', (request:express.Request, response:express.Response) => {
+        response.send('OK');
+    });
 
-app.listen(app.get('port'), () => {
-    console.log(`Application is listening on PORT ${app.get('port')}`)
-});
+    app.listen(app.get('port'), () => {
+        console.log(`Application is listening on PORT ${app.get('port')}`)
+    });
+}, 2000);
