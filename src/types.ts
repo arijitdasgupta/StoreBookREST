@@ -2,7 +2,7 @@
 const TYPES = {
     UsersController: 'UsersController',
     UsersService: 'UsersService',
-    PostgreSQL: 'PostgreSQL',
+    PostgreSQLPool: 'PostgreSQLPool',
     RabbitTxConnection: 'RabbitTxConnection',
     RabbitRxConnection: 'RabbitRxConnection',
     PostgresClientForRepositories: 'PostgresClientForRepositories',

@@ -8,21 +8,21 @@ import { Pool } from 'pg';
 import * as interfaces from './interfaces';
 import { container } from './inversify.config';
 import { PostgresClient } from './db/PostgresClient';
-import { RabbitTxConnection } from './rabbit/RabbitTxConnection';
-import { RabbitRxConnection } from './rabbit/RabbitRxConnection';
+import { RabbitConnection } from './rabbit/RabbitConnection';
 import { TYPES } from './types';
+import { NodePort } from './env';
 
 const app = express();
 
-app.set('port', (process.env.PORT || 5000));
+app.set('port', NodePort);
 
 app.use(expressLogger(logger));
 app.use(cors({origin: true}));
 
 Promise.all([
     container.get<PostgresClient>(TYPES.PostgresClientForRepositories).clientConnectionPromise,
-    container.get<RabbitTxConnection>(TYPES.RabbitTxConnection).rabbitConnectionPromise,
-    container.get<RabbitRxConnection>(TYPES.RabbitRxConnection).rabbitConnectionPromise
+    container.get<RabbitConnection>(TYPES.RabbitTxConnection).channelCreatePromise,
+    container.get<RabbitConnection>(TYPES.RabbitRxConnection).channelCreatePromise
 ]).then(_ => {
     const usersController = container.get<interfaces.IController>(TYPES.UsersController);
     const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);

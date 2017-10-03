@@ -2,15 +2,15 @@ import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
 import { TYPES } from '../types';
-import { PostgreSQL } from './PostgreSQL';
+import { PostgreSQLPool } from './PostgreSQLPool';
 
 @injectable()
 export class PostgresClient {
     dbClient:Client;
     clientConnectionPromise: Promise<void>;
 
-    constructor(@inject(TYPES.PostgreSQL) postgreSQL:PostgreSQL) {
-        this.clientConnectionPromise = postgreSQL.pool.connect().then(client => {
+    constructor(@inject(TYPES.PostgreSQLPool) postgreSQLPool:PostgreSQLPool) {
+        this.clientConnectionPromise = postgreSQLPool.pool.connect().then(client => {
             this.dbClient = client;
         });
     }

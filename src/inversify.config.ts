@@ -5,9 +5,8 @@ import { TYPES } from "./types";
 import  * as interfaces from "./interfaces";
 import { UsersController } from "./controllers/UsersController";
 import { UsersService } from "./services/UsersService";
-import { PostgreSQL } from "./db/PostgreSQL";
-import { RabbitTxConnection } from "./rabbit/RabbitTxConnection";
-import { RabbitRxConnection } from "./rabbit/RabbitRxConnection";
+import { RabbitConnection } from "./rabbit/RabbitConnection";
+import { PostgreSQLPool } from "./db/PostgreSQLPool";
 import { PostgresClient } from "./db/PostgresClient";
 import { SHA256Utils } from "./utils/SHA256Utils";
 import { UpdateQueryUtils } from "./utils/UpdateQueryUtils";
@@ -18,11 +17,14 @@ import { ItemsController } from "./controllers/ItemsController";
 import { TransactionsController } from "./controllers/TransactionsController";
 import { TransactionsService } from "./services/TransactionsService";
 import { TransactionsRepository } from "./repositories/TransactionsRepository";
+import * as env from './env';
 
 const container = new Container();
-container.bind<RabbitTxConnection>(TYPES.RabbitTxConnection).to(RabbitTxConnection).inSingletonScope();
-container.bind<RabbitRxConnection>(TYPES.RabbitRxConnection).to(RabbitRxConnection).inSingletonScope();
-container.bind<PostgreSQL>(TYPES.PostgreSQL).to(PostgreSQL).inSingletonScope();
+
+container.bind<RabbitConnection>(TYPES.RabbitTxConnection).toConstantValue(new RabbitConnection(env.RabbitTxUrl, 'RX'));
+container.bind<RabbitConnection>(TYPES.RabbitRxConnection).toConstantValue(new RabbitConnection(env.RabbitRxUrl, 'TX'));
+container.bind<PostgreSQLPool>(TYPES.PostgreSQLPool).toConstantValue(new PostgreSQLPool(env.DatabaseUrl));
+
 container.bind<PostgresClient>(TYPES.PostgresClientForRepositories).to(PostgresClient).inSingletonScope();
 container.bind<UsersService>(TYPES.UsersService).to(UsersService).inSingletonScope();
 container.bind<SHA256Utils>(TYPES.SHA256Utils).to(SHA256Utils).inSingletonScope();
