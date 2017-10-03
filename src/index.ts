@@ -7,7 +7,7 @@ import { Pool } from 'pg';
 
 import * as interfaces from './interfaces';
 import { container } from './inversify.config';
-import { PostgresClient } from './db/PostgresClient';
+import { PostgresClientForRepositories } from './db/PostgresClientForRepositories';
 import { TYPES } from './types';
 
 const app = express();
@@ -17,7 +17,7 @@ app.set('port', (process.env.PORT || 5000));
 app.use(expressLogger(logger));
 app.use(cors({origin: true}));
 
-container.get<PostgresClient>(TYPES.PostgresClient).clientConnectionPromise.then(_ => {
+container.get<PostgresClientForRepositories>(TYPES.PostgresClientForRepositories).clientConnectionPromise.then(_ => {
     const usersController = container.get<interfaces.IController>(TYPES.UsersController);
     const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);
     const transcationsController = container.get<interfaces.IController>(TYPES.TransactionsController);

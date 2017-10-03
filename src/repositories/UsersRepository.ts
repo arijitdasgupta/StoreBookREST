@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
 import { SHA256Utils } from '../utils/SHA256Utils';
-import { PostgresClient } from '../db/PostgresClient';
+import { PostgresClientForRepositories } from '../db/PostgresClientForRepositories';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { IUserObjectCreate } from '../services/UsersService';
 import { TYPES } from '../types';
@@ -13,7 +13,7 @@ export class UsersRepository {
     private updateQueryUtils: UpdateQueryUtils;
     private dbClient: Client;
 
-    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
+    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClientForRepositories, 
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.sha256Utils = sha256Utils;
@@ -79,7 +79,6 @@ export class UsersRepository {
     }
 
     deleteUser = (userId:number):Promise<any> => {
-        // TODO: This needs to update the active flag, not delete the actual row
         return this.dbClient.query('UPDATE USERS SET active=FALSE WHERE id=$1', [userId]);
     }
 

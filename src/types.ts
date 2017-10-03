@@ -3,7 +3,8 @@ const TYPES = {
     UsersController: 'UsersController',
     UsersService: 'UsersService',
     PostgreSQL: 'PostgreSQL',
-    PostgresClient: 'PostgresClient',
+    RabbitTxClient: 'RabbitTxClient',
+    PostgresClientForRepositories: 'PostgresClientForRepositories',
     SHA256Utils: 'SHA256Utils',
     UpdateQueryUtils: 'UpdateQueryUtils',
     UsersRepository: 'UsersRepository',
@@ -12,7 +13,7 @@ const TYPES = {
     ItemsController: 'ItemsController',
     TransactionsController: 'TransactionsController',
     TransactionsService: 'TransactionsService',
-    TransactionsRepository: 'TranscationsRepository'
+    TransactionsRepository: 'TranscationsRepository',
 };
 
 export { TYPES };

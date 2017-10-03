@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
-import { PostgresClient } from '../db/PostgresClient';
+import { PostgresClientForRepositories } from '../db/PostgresClientForRepositories';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { TYPES } from '../types';
 import { IItemObject } from '../services/ItemsService';
@@ -13,7 +13,7 @@ export class ItemsRepository {
 
     private returningColumns = '*';
 
-    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
+    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClientForRepositories, 
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.dbClient = postgresClient.dbClient;
         this.updateQueryUtils = updateQueryUtils;
