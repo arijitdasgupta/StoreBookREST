@@ -7,9 +7,7 @@ import { Pool } from 'pg';
 
 import * as interfaces from './interfaces';
 import { container } from './inversify.config';
-import { PostgresClient } from './db/PostgresClient';
-import { RabbitConnection } from './rabbit/RabbitConnection';
-import { RabbitChannel } from './rabbit/RabbitChannel';
+import { IOHalter } from './utils/IOHalter';
 import { TYPES } from './types';
 import { NodePort } from './env';
 
@@ -20,11 +18,13 @@ app.set('port', NodePort);
 app.use(expressLogger(logger));
 app.use(cors({origin: true}));
 
-const initApplication = () => {
-    const usersController = container.get<interfaces.IController>(TYPES.UsersController);
-    const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);
-    const transcationsController = container.get<interfaces.IController>(TYPES.TransactionsController);
+const usersController = container.get<interfaces.IController>(TYPES.UsersController);
+const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);
+const transcationsController = container.get<interfaces.IController>(TYPES.TransactionsController);
 
+const ioHalter = container.get<IOHalter>(TYPES.IOHalter);
+
+const initApplication = () => {
     app.use(usersController.application);
     app.use(itemsController.application);
     app.use(transcationsController.application);
@@ -39,6 +39,6 @@ const initApplication = () => {
     });
 };
 
-initApplication();
+Promise.all(ioHalter.getAllPromises()).then(initApplication);
 
 

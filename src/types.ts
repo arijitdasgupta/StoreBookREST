@@ -18,6 +18,7 @@ const TYPES = {
     TransactionsController: 'TransactionsController',
     TransactionsService: 'TransactionsService',
     TransactionsRepository: 'TranscationsRepository',
+    IOHalter: 'IOHalter'
 };
 
 export { TYPES };

@@ -4,9 +4,11 @@ import { TYPES } from '../types';
 import { TransactionsRepository } from '../repositories/TransactionsRepository';
 import { ItemsRepository } from '../repositories/ItemsRepository';
 import { RabbitChannel } from '../rabbit/RabbitChannel';
+import { Channel } from 'amqplib/callback_api';
 import { TransactionTypes } from '../enums/TransactionTypes';
 import { UUIDUtils } from '../utils/UUIDUtils';
 import { Queues } from '../enums/Queues';
+import { IOHalter } from '../utils/IOHalter';
 import * as _ from 'lodash';
 
 export interface ITransactionObject {
@@ -33,19 +35,22 @@ export interface ITransactionObjectJoined extends ITransactionObject {
 export class TransactionsService {
     transactionRepository:TransactionsRepository;
     itemsRepository:ItemsRepository;
-    rabbitChannel:RabbitChannel;
+    rabbitChannel:Channel;
     uuidUtils: UUIDUtils;
 
     constructor(@inject(TYPES.TransactionsRepository) transactionsRepository:TransactionsRepository,
         @inject(TYPES.ItemsRepository) itemsRepository:ItemsRepository,
-        @inject(TYPES.RabbitTxConnection) rabbitChannel:RabbitChannel,
-        @inject(TYPES.UUIDUtils) uuidUtils:UUIDUtils) {
+        @inject(TYPES.RabbitTxChannel) rabbitChannel:RabbitChannel,
+        @inject(TYPES.UUIDUtils) uuidUtils:UUIDUtils,
+        @inject(TYPES.IOHalter) ioHalter:IOHalter) {
         this.transactionRepository = transactionsRepository;
         this.itemsRepository = itemsRepository;
-        this.rabbitChannel = rabbitChannel;
         this.uuidUtils = uuidUtils;
 
-        // setTimeout(_ => rabbitChannel.channel.assertQueue(Queues.transactionQueue), 1000);
+        ioHalter.addPromise(rabbitChannel.channelCreatePromise.then(channel => {
+            this.rabbitChannel = channel;
+            channel.assertQueue(Queues.transactionQueue);
+        }));
     }
 
     private transactionsMapper = (transaction:any):ITransactionObject => {

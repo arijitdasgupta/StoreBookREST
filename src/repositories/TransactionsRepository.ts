@@ -5,6 +5,7 @@ import getDecorators from 'inversify-inject-decorators';
 import { PostgresClient } from '../db/PostgresClient';
 import { ITransactionObject } from '../services/TransactionsService';
 import { TYPES } from '../types';
+import { IOHalter } from '../utils/IOHalter';
 
 @injectable()
 export class TransactionsRepository {
@@ -13,8 +14,11 @@ export class TransactionsRepository {
     private returningColumns = '*';
     private joiningColumns = ''
 
-    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient) {
-        this.dbClient = postgresClient.dbClient;
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient,
+                @inject(TYPES.IOHalter) ioHalter:IOHalter) {
+        ioHalter.addPromise(postgresClient.clientConnectionPromise.then(client => {
+            this.dbClient = client;
+        }));
     }
 
     // Refactor SQL query

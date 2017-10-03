@@ -6,6 +6,7 @@ import { PostgresClient } from '../db/PostgresClient';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { IUserObjectCreate } from '../services/UsersService';
 import { TYPES } from '../types';
+import { IOHalter } from '../utils/IOHalter';
 
 @injectable()
 export class UsersRepository {
@@ -15,10 +16,14 @@ export class UsersRepository {
 
     constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
-        @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
+        @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils,
+        @inject(TYPES.IOHalter) ioHalter:IOHalter) {
         this.sha256Utils = sha256Utils;
         this.updateQueryUtils = updateQueryUtils;
-        this.dbClient = postgresClient.dbClient;
+
+        ioHalter.addPromise(postgresClient.clientConnectionPromise.then(client => {
+            this.dbClient = client;
+        }));
     }
 
     private returningColumns = '*';

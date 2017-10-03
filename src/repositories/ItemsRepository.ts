@@ -3,6 +3,7 @@ import { Client } from 'pg';
 
 import { PostgresClient } from '../db/PostgresClient';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
+import { IOHalter } from '../utils/IOHalter';
 import { TYPES } from '../types';
 import { IItemObject } from '../services/ItemsService';
 
@@ -14,9 +15,14 @@ export class ItemsRepository {
     private returningColumns = '*';
 
     constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
-        @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
-        this.dbClient = postgresClient.dbClient;
+        @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils,
+        @inject(TYPES.IOHalter) ioHalter:IOHalter) {
+
         this.updateQueryUtils = updateQueryUtils;
+        
+        ioHalter.addPromise(postgresClient.clientConnectionPromise.then(client => {
+            this.dbClient = client;
+        }));
     }
 
     private itemUpdateSpecs:IUpdateSpec[] = [

@@ -20,10 +20,12 @@ import { ItemsController } from "./controllers/ItemsController";
 import { TransactionsController } from "./controllers/TransactionsController";
 import { TransactionsService } from "./services/TransactionsService";
 import { TransactionsRepository } from "./repositories/TransactionsRepository";
+import { IOHalter } from "./utils/IOHalter";
 import * as env from './env';
 
 const container = new Container();
 
+container.bind<IOHalter>(TYPES.IOHalter).to(IOHalter).inSingletonScope();
 container.bind<SHA256Utils>(TYPES.SHA256Utils).toConstantValue(new SHA256Utils(env.passwordSecret));
 container.bind<UUIDUtils>(TYPES.UUIDUtils).toConstantValue(new UUIDUtils());
 container.bind<PostgreSQLPool>(TYPES.PostgreSQLPool).toConstantValue(new PostgreSQLPool(env.DatabaseUrl));
@@ -35,7 +37,6 @@ container.bind<RabbitChannel>(TYPES.RabbitTxChannel).toDynamicValue(context => n
 container.bind<RabbitChannel>(TYPES.RabbitRxChannel).toDynamicValue(context => new RabbitChannel(context.container.get<RabbitConnection>(TYPES.RabbitRxConnection)));
 
 container.bind<PostgresClient>(TYPES.PostgresClient).to(PostgresClient);
-
 container.bind<UsersService>(TYPES.UsersService).to(UsersService).inSingletonScope();
 container.bind<appInterfaces.IController>(TYPES.UsersController).to(UsersController).inSingletonScope();
 container.bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
