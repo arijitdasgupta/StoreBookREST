@@ -8,7 +8,7 @@ export class RabbitConnection {
     channelCreatePromise: Promise<Channel>;
 
     // mode is purely ornamental...
-    constructor(rabbitUrl: string, mode = '') {
+    constructor(rabbitUrl: string, mode = 'nuthing!') {
         this.connectionCreatePromise = new Promise((resolve, reject) => {
             connect(rabbitUrl, (err, conn) => {
                 if (err) {
@@ -30,7 +30,7 @@ export class RabbitConnection {
                         console.log(`Initiated RabbitMQ channel for ${mode}`);
                         resolve(channel);
                     }
-                })
+                });
             });
         });
     }

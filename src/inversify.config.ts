@@ -24,10 +24,10 @@ const container = new Container();
 container.bind<RabbitConnection>(TYPES.RabbitTxConnection).toConstantValue(new RabbitConnection(env.RabbitTxUrl, 'RX'));
 container.bind<RabbitConnection>(TYPES.RabbitRxConnection).toConstantValue(new RabbitConnection(env.RabbitRxUrl, 'TX'));
 container.bind<PostgreSQLPool>(TYPES.PostgreSQLPool).toConstantValue(new PostgreSQLPool(env.DatabaseUrl));
+container.bind<SHA256Utils>(TYPES.SHA256Utils).toConstantValue(new SHA256Utils(env.passwordSecret));
 
 container.bind<PostgresClient>(TYPES.PostgresClientForRepositories).to(PostgresClient).inSingletonScope();
 container.bind<UsersService>(TYPES.UsersService).to(UsersService).inSingletonScope();
-container.bind<SHA256Utils>(TYPES.SHA256Utils).to(SHA256Utils).inSingletonScope();
 container.bind<interfaces.IController>(TYPES.UsersController).to(UsersController).inSingletonScope();
 container.bind<UpdateQueryUtils>(TYPES.UpdateQueryUtils).to(UpdateQueryUtils).inSingletonScope();
 container.bind<UsersRepository>(TYPES.UsersRepository).to(UsersRepository).inSingletonScope();
