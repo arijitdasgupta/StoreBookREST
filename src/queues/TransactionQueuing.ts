@@ -29,13 +29,24 @@ export class TransactionQueuing {
         ioHalter.addPromise(rabbitTxChannel.channelCreatePromise.then(channel => {
             this.rabbitTxChannel = channel;
             channel.assertQueue(Queues.transactionQueue);
-        }));
-
-        ioHalter.addPromise(rabbitRxChannel.channelCreatePromise.then(channel => {
-            this.rabbitRxChannel = channel;
-            this.rabbitRxChannel.prefetch(1);
-            channel.assertQueue(Queues.transactionQueue);
-            this.initiateConsumer();
+        }).then(_ => {
+            // Purging the queue, so that all unacked-stuff is cleaned up...
+            return new Promise((resolve, reject) => {
+                this.rabbitTxChannel.purgeQueue(Queues.transactionQueue, (err, ok) => {
+                    if (err) {
+                        reject(err);
+                    } else {
+                        resolve(ok);
+                    }
+                });
+            });
+        }).then(_ => {
+            return rabbitRxChannel.channelCreatePromise.then(channel => {
+                this.rabbitRxChannel = channel;
+                this.rabbitRxChannel.prefetch(1);
+                channel.assertQueue(Queues.transactionQueue);
+                this.initiateConsumer();
+            })
         }));
 
         this.transactionHashtable = {};
