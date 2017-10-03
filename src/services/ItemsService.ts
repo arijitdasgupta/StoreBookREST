@@ -7,17 +7,6 @@ import { TransactionsRepository } from '../repositories/TransactionsRepository';
 import { TransactionTypes } from '../enums/TransactionTypes';
 import { ITransactionObject } from '../services/TransactionsService';
 
-// CREATE TABLE ITEMS (
-    //     id serial PRIMARY KEY not null,
-    //     item_name varchar(256),
-    //     item_description varchar(500),
-    //     item_quantity real not null,
-    //     item_quantity_unit varchar(50) not null,
-    //     item_alert_threshold real,
-    //     item_product_code varchar(100),
-    //     created timestamp default current_timestamp
-    //   );
-
 export interface IItemObject {
     id: number;
     quantity: number;
