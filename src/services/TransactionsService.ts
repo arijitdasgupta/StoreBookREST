@@ -3,7 +3,10 @@ import { injectable, inject } from 'inversify';
 import { TYPES } from '../types';
 import { TransactionsRepository } from '../repositories/TransactionsRepository';
 import { ItemsRepository } from '../repositories/ItemsRepository';
+import { RabbitChannel } from '../rabbit/RabbitChannel';
 import { TransactionTypes } from '../enums/TransactionTypes';
+import { UUIDUtils } from '../utils/UUIDUtils';
+import { Queues } from '../enums/Queues';
 import * as _ from 'lodash';
 
 export interface ITransactionObject {
@@ -30,11 +33,19 @@ export interface ITransactionObjectJoined extends ITransactionObject {
 export class TransactionsService {
     transactionRepository:TransactionsRepository;
     itemsRepository:ItemsRepository;
+    rabbitChannel:RabbitChannel;
+    uuidUtils: UUIDUtils;
 
     constructor(@inject(TYPES.TransactionsRepository) transactionsRepository:TransactionsRepository,
-        @inject(TYPES.ItemsRepository) itemsRepository:ItemsRepository) {
+        @inject(TYPES.ItemsRepository) itemsRepository:ItemsRepository,
+        @inject(TYPES.RabbitTxConnection) rabbitChannel:RabbitChannel,
+        @inject(TYPES.UUIDUtils) uuidUtils:UUIDUtils) {
         this.transactionRepository = transactionsRepository;
         this.itemsRepository = itemsRepository;
+        this.rabbitChannel = rabbitChannel;
+        this.uuidUtils = uuidUtils;
+
+        // setTimeout(_ => rabbitChannel.channel.assertQueue(Queues.transactionQueue), 1000);
     }
 
     private transactionsMapper = (transaction:any):ITransactionObject => {
@@ -86,6 +97,7 @@ export class TransactionsService {
     createTransaction = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
         const transactionAmount = transactionObject.quantity;
         // TODO: Ugly, refactor
+        console.log(this.uuidUtils.createUuid());
         if (transactionObject.quantity && !_.isNaN(parseFloat(transactionObject.quantity.toString()))) {
             return this.updateItemQuantity(transactionObject).then(_ => {
                 return this.transactionRepository.postTransaction(transactionObject)

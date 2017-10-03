@@ -13,7 +13,7 @@ export class ItemsRepository {
 
     private returningColumns = '*';
 
-    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClient, 
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.dbClient = postgresClient.dbClient;
         this.updateQueryUtils = updateQueryUtils;

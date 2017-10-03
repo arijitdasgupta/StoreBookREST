@@ -9,6 +9,7 @@ import * as interfaces from './interfaces';
 import { container } from './inversify.config';
 import { PostgresClient } from './db/PostgresClient';
 import { RabbitConnection } from './rabbit/RabbitConnection';
+import { RabbitChannel } from './rabbit/RabbitChannel';
 import { TYPES } from './types';
 import { NodePort } from './env';
 
@@ -19,11 +20,7 @@ app.set('port', NodePort);
 app.use(expressLogger(logger));
 app.use(cors({origin: true}));
 
-Promise.all([
-    container.get<PostgresClient>(TYPES.PostgresClientForRepositories).clientConnectionPromise,
-    container.get<RabbitConnection>(TYPES.RabbitTxConnection).channelCreatePromise,
-    container.get<RabbitConnection>(TYPES.RabbitRxConnection).channelCreatePromise
-]).then(_ => {
+const initApplication = () => {
     const usersController = container.get<interfaces.IController>(TYPES.UsersController);
     const itemsController = container.get<interfaces.IController>(TYPES.ItemsController);
     const transcationsController = container.get<interfaces.IController>(TYPES.TransactionsController);
@@ -40,4 +37,8 @@ Promise.all([
     app.listen(app.get('port'), () => {
         console.log(`Application is listening on PORT ${app.get('port')}`)
     });
-});
+};
+
+initApplication();
+
+

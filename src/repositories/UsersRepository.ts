@@ -13,7 +13,7 @@ export class UsersRepository {
     private updateQueryUtils: UpdateQueryUtils;
     private dbClient: Client;
 
-    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClient, 
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.sha256Utils = sha256Utils;
