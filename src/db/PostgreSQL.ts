@@ -10,6 +10,8 @@ export class PostgreSQL {
     constructor() {
         // Heroku provides with DATABASE_URL... OR, 
         // the default postgreSQL docker image (https://hub.docker.com/_/postgres/) username and password is used
+        
+        console.log('Initiating PostgreSQL connection pool');
         this.pool = new Pool({
             connectionString: process.env.DATABASE_URL || 'postgresql://postgres:mysecretpassword@localhost:5432/storebook_db'
         });

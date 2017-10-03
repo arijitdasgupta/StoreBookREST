@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
 import { SHA256Utils } from '../utils/SHA256Utils';
-import { PostgresClientForRepositories } from '../db/PostgresClientForRepositories';
+import { PostgresClient } from '../db/PostgresClient';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { IUserObjectCreate } from '../services/UsersService';
 import { TYPES } from '../types';
@@ -13,7 +13,7 @@ export class UsersRepository {
     private updateQueryUtils: UpdateQueryUtils;
     private dbClient: Client;
 
-    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClientForRepositories, 
+    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClient, 
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.sha256Utils = sha256Utils;

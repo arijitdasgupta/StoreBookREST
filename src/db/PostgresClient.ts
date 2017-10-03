@@ -5,7 +5,7 @@ import { TYPES } from '../types';
 import { PostgreSQL } from './PostgreSQL';
 
 @injectable()
-export class PostgresClientForRepositories {
+export class PostgresClient {
     dbClient:Client;
     clientConnectionPromise: Promise<void>;
 

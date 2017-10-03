@@ -1,7 +1,7 @@
 import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
-import { PostgresClientForRepositories } from '../db/PostgresClientForRepositories';
+import { PostgresClient } from '../db/PostgresClient';
 import { ITransactionObject } from '../services/TransactionsService';
 import { TYPES } from '../types';
 
@@ -12,7 +12,7 @@ export class TransactionsRepository {
     private returningColumns = '*';
     private joiningColumns = ''
 
-    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClientForRepositories) {
+    constructor(@inject(TYPES.PostgresClientForRepositories) postgresClient:PostgresClient) {
         this.dbClient = postgresClient.dbClient;
     }
 
