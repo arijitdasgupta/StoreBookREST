@@ -2,7 +2,7 @@ import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
 import { SHA256Utils } from '../utils/SHA256Utils';
-import { PostgreSQL } from '../db/PostgreSQL';
+import { PostgresClient } from '../db/PostgresClient';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { IUserObjectCreate } from '../services/UsersService';
 import { TYPES } from '../types';
@@ -10,21 +10,15 @@ import { TYPES } from '../types';
 @injectable()
 export class UsersRepository {
     private sha256Utils:SHA256Utils;
-    private postgreSQL:PostgreSQL;
     private updateQueryUtils: UpdateQueryUtils;
     private dbClient: Client;
 
-    constructor(@inject(TYPES.PostgreSQL) postgreSQL:PostgreSQL, 
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.sha256Utils = sha256Utils;
-        this.postgreSQL = postgreSQL;
         this.updateQueryUtils = updateQueryUtils;
-        
-        // Non-optimal way to connetcing
-        this.postgreSQL.pool.connect().then((client) => {
-            this.dbClient = client;
-        });
+        this.dbClient = postgresClient.dbClient;
     }
 
     private returningColumns = '*';

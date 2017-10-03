@@ -1,14 +1,13 @@
 import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
-import { PostgreSQL } from '../db/PostgreSQL';
+import { PostgresClient } from '../db/PostgresClient';
 import { UpdateQueryUtils, IUpdateSpec } from '../utils/UpdateQueryUtils';
 import { TYPES } from '../types';
 import { IItemObject } from '../services/ItemsService';
 
 @injectable()
 export class ItemsRepository {
-    private postgreSQL:PostgreSQL;
     private updateQueryUtils: UpdateQueryUtils;
     private dbClient: Client;
 
@@ -26,14 +25,10 @@ export class ItemsRepository {
     //     deleted BOOLEAN default FALSE
     //   );
 
-    constructor(@inject(TYPES.PostgreSQL) postgreSQL:PostgreSQL, 
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
-        this.postgreSQL = postgreSQL;
+        this.dbClient = postgresClient.dbClient;
         this.updateQueryUtils = updateQueryUtils;
-
-        this.postgreSQL.pool.connect().then((client) => {
-            this.dbClient = client;
-        });
     }
 
     private itemUpdateSpecs:IUpdateSpec[] = [

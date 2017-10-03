@@ -6,6 +6,7 @@ import  * as interfaces from "./interfaces";
 import { UsersController } from "./controllers/UsersController";
 import { UsersService } from "./services/UsersService";
 import { PostgreSQL } from "./db/PostgreSQL";
+import { PostgresClient } from "./db/PostgresClient";
 import { SHA256Utils } from "./utils/SHA256Utils";
 import { UpdateQueryUtils } from "./utils/UpdateQueryUtils";
 import { UsersRepository } from "./repositories/UsersRepository";
@@ -18,6 +19,7 @@ import { TransactionsRepository } from "./repositories/TransactionsRepository";
 
 const container = new Container();
 container.bind<PostgreSQL>(TYPES.PostgreSQL).to(PostgreSQL).inSingletonScope();
+container.bind<PostgresClient>(TYPES.PostgresClient).to(PostgresClient).inSingletonScope();
 container.bind<UsersService>(TYPES.UsersService).to(UsersService).inSingletonScope();
 container.bind<SHA256Utils>(TYPES.SHA256Utils).to(SHA256Utils).inSingletonScope();
 container.bind<interfaces.IController>(TYPES.UsersController).to(UsersController).inSingletonScope();
@@ -29,5 +31,6 @@ container.bind<interfaces.IController>(TYPES.ItemsController).to(ItemsController
 container.bind<TransactionsService>(TYPES.TransactionsService).to(TransactionsService).inSingletonScope();
 container.bind<TransactionsRepository>(TYPES.TransactionsRepository).to(TransactionsRepository).inSingletonScope();
 container.bind<interfaces.IController>(TYPES.TransactionsController).to(TransactionsController).inSingletonScope();
+
 
 export { container };

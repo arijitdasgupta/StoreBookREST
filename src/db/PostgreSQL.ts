@@ -1,5 +1,7 @@
-import { Pool } from 'pg';
+import { Pool, Client } from 'pg';
 import { injectable } from 'inversify';
+
+import { TYPES } from '../types';
 
 @injectable()
 export class PostgreSQL {
@@ -11,7 +13,5 @@ export class PostgreSQL {
         this.pool = new Pool({
             connectionString: process.env.DATABASE_URL || 'postgresql://postgres:mysecretpassword@localhost:5432/storebook_db'
         });
-
-        console.log('Initiated connection to PostgreSQL');
     }
 }

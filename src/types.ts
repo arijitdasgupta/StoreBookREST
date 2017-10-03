@@ -3,6 +3,7 @@ const TYPES = {
     UsersController: 'UsersController',
     UsersService: 'UsersService',
     PostgreSQL: 'PostgreSQL',
+    PostgresClient: 'PostgresClient',
     SHA256Utils: 'SHA256Utils',
     UpdateQueryUtils: 'UpdateQueryUtils',
     UsersRepository: 'UsersRepository',

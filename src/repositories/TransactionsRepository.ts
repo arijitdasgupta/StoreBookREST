@@ -1,24 +1,19 @@
 import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
 
-import { PostgreSQL } from '../db/PostgreSQL';
+import { PostgresClient } from '../db/PostgresClient';
 import { ITransactionObject } from '../services/TransactionsService';
 import { TYPES } from '../types';
 
 @injectable()
 export class TransactionsRepository {
-    postgreSQL: PostgreSQL;
     private dbClient:Client;
 
     private returningColumns = '*';
     private joiningColumns = ''
 
-    constructor(@inject(TYPES.PostgreSQL) postgreSQL:PostgreSQL) {
-        this.postgreSQL = postgreSQL;
-
-        this.postgreSQL.pool.connect().then(client => {
-            this.dbClient = client;
-        });
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient) {
+        this.dbClient = postgresClient.dbClient;
     }
 
     // CREATE TABLE TRANSACTIONS (
