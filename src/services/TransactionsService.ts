@@ -32,7 +32,8 @@ export class TransactionsService {
     itemsRepository:ItemsRepository;
 
     constructor(@inject(TYPES.TransactionsRepository) transactionsRepository:TransactionsRepository,
-        @inject(TYPES.ItemsRepository) itemsRepository:ItemsRepository) {
+        @inject(TYPES.ItemsRepository) itemsRepository:ItemsRepository,
+        @inject(TYPES.RabbitTxClient) rabbitTxClient) {
         this.transactionRepository = transactionsRepository;
         this.itemsRepository = itemsRepository;
     }
