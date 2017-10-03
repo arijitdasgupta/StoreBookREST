@@ -92,7 +92,7 @@ export class TransactionsService {
     }
 
     private doTransactionOnQueue = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
-        return this.transacationQueuing.createNewTransaction(this.uuidUtils.createUuid(), transactionObject)
+        return this.transacationQueuing.createNewTransaction<ITransactionObject>(this.uuidUtils.createUuid(), transactionObject)
         .then(postQueueObject => {
             return this.doTransactionOnRepository(postQueueObject.transactionObject).then(newTransactionObject => {
                 postQueueObject.ackFunk();
