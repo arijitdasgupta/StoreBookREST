@@ -83,11 +83,21 @@ export class TransactionsService {
         });
     }
 
-    private doTransactionOnRepository = (transactionObject):Promise<ITransactionObject> => {
+    private doTransactionOnRepository = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
         return this.updateItemQuantity(transactionObject).then(_ => {
             return this.transactionRepository.postTransaction(transactionObject)
         }).then(transactions => {
             return transactions.map(this.transactionsMapper)[0];
+        });
+    }
+
+    private doTransactionOnQueue = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
+        return this.transacationQueuing.createNewTransaction(this.uuidUtils.createUuid(), transactionObject)
+        .then(postQueueObject => {
+            return this.doTransactionOnRepository(postQueueObject.transactionObject).then(newTransactionObject => {
+                postQueueObject.ackFunk();
+                return newTransactionObject;
+            });
         });
     }
 
@@ -103,13 +113,7 @@ export class TransactionsService {
     createTransaction = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
         // TODO: Ugly, refactor
         if (transactionObject.quantity && !_.isNaN(parseFloat(transactionObject.quantity.toString()))) {
-            return this.transacationQueuing.createNewTransaction(this.uuidUtils.createUuid(), transactionObject)
-                .then(postQueueObject => {
-                    return this.doTransactionOnRepository(postQueueObject.transactionObject).then(transcationObject => {
-                        postQueueObject.ackFunk();
-                        return transactionObject;
-                    });
-                });
+            return this.doTransactionOnQueue(transactionObject);
         } else {
             return Promise.reject(null);
         }
