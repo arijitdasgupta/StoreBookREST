@@ -1,1 +1,1 @@
-web: yarn start -- --debug=5858
+web: npm run start -- --debug=5858
