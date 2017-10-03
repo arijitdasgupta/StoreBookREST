@@ -20,6 +20,7 @@ import { ItemsController } from "./controllers/ItemsController";
 import { TransactionsController } from "./controllers/TransactionsController";
 import { TransactionsService } from "./services/TransactionsService";
 import { TransactionsRepository } from "./repositories/TransactionsRepository";
+import { TransactionQueuing } from "./queues/TransactionQueuing";
 import { IOHalter } from "./utils/IOHalter";
 import * as env from './env';
 
@@ -34,10 +35,9 @@ container.bind<PostgreSQLPool>(TYPES.PostgreSQLPool).toConstantValue(new Postgre
 container.bind<UpdateQueryUtils>(TYPES.UpdateQueryUtils).to(UpdateQueryUtils).inSingletonScope();
 container.bind<RabbitConnection>(TYPES.RabbitTxConnection).toConstantValue(new RabbitConnection(env.RabbitTxUrl, 'TX'));
 container.bind<RabbitConnection>(TYPES.RabbitRxConnection).toConstantValue(new RabbitConnection(env.RabbitRxUrl, 'RX'));
-
 container.bind<RabbitChannel>(TYPES.RabbitTxChannel).toDynamicValue(context => new RabbitChannel(context.container.get<RabbitConnection>(TYPES.RabbitTxConnection)));
 container.bind<RabbitChannel>(TYPES.RabbitRxChannel).toDynamicValue(context => new RabbitChannel(context.container.get<RabbitConnection>(TYPES.RabbitRxConnection)));
-
+container.bind<TransactionQueuing>(TYPES.TransactionQueuing).to(TransactionQueuing);
 container.bind<PostgresClient>(TYPES.PostgresClient).to(PostgresClient);
 container.bind<UsersService>(TYPES.UsersService).to(UsersService).inSingletonScope();
 container.bind<appInterfaces.IController>(TYPES.UsersController).to(UsersController).inSingletonScope();

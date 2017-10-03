@@ -4,11 +4,9 @@ import { TYPES } from '../types';
 import { TransactionsRepository } from '../repositories/TransactionsRepository';
 import { ItemsRepository } from '../repositories/ItemsRepository';
 import { RabbitChannel } from '../rabbit/RabbitChannel';
-import { Channel } from 'amqplib/callback_api';
 import { TransactionTypes } from '../enums/TransactionTypes';
+import { TransactionQueuing } from '../queues/TransactionQueuing';
 import { UUIDUtils } from '../utils/UUIDUtils';
-import { Queues } from '../enums/Queues';
-import { IOHalter } from '../utils/IOHalter';
 import * as _ from 'lodash';
 
 export interface ITransactionObject {
@@ -35,22 +33,17 @@ export interface ITransactionObjectJoined extends ITransactionObject {
 export class TransactionsService {
     transactionRepository:TransactionsRepository;
     itemsRepository:ItemsRepository;
-    rabbitChannel:Channel;
     uuidUtils: UUIDUtils;
+    transacationQueuing: TransactionQueuing;
 
     constructor(@inject(TYPES.TransactionsRepository) transactionsRepository:TransactionsRepository,
         @inject(TYPES.ItemsRepository) itemsRepository:ItemsRepository,
-        @inject(TYPES.RabbitTxChannel) rabbitChannel:RabbitChannel,
         @inject(TYPES.UUIDUtils) uuidUtils:UUIDUtils,
-        @inject(TYPES.IOHalter) ioHalter:IOHalter) {
+        @inject(TYPES.TransactionQueuing) transactionQueuing:TransactionQueuing) {
         this.transactionRepository = transactionsRepository;
         this.itemsRepository = itemsRepository;
         this.uuidUtils = uuidUtils;
-
-        ioHalter.addPromise(rabbitChannel.channelCreatePromise.then(channel => {
-            this.rabbitChannel = channel;
-            channel.assertQueue(Queues.transactionQueue);
-        }));
+        this.transacationQueuing = transactionQueuing;
     }
 
     private transactionsMapper = (transaction:any):ITransactionObject => {
@@ -90,6 +83,14 @@ export class TransactionsService {
         });
     }
 
+    private doTransactionOnRepository = (transactionObject):Promise<ITransactionObject> => {
+        return this.updateItemQuantity(transactionObject).then(_ => {
+            return this.transactionRepository.postTransaction(transactionObject)
+        }).then(transactions => {
+            return transactions.map(this.transactionsMapper)[0];
+        });
+    }
+
     getTransaction = (transactionId:number):Promise<ITransactionObject> => {
         return this.transactionRepository.getTranscation(transactionId).then(rows => rows.map(this.transactionsMapperJoined)[0]);
     }
@@ -100,15 +101,15 @@ export class TransactionsService {
 
     // Three queries, if the system in use during a reboot, this will cause problems, no locking mechanism
     createTransaction = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
-        const transactionAmount = transactionObject.quantity;
         // TODO: Ugly, refactor
-        console.log(this.uuidUtils.createUuid());
         if (transactionObject.quantity && !_.isNaN(parseFloat(transactionObject.quantity.toString()))) {
-            return this.updateItemQuantity(transactionObject).then(_ => {
-                return this.transactionRepository.postTransaction(transactionObject)
-            }).then(transactions => {
-                return transactions.map(this.transactionsMapper)[0];
-            });
+            return this.transacationQueuing.createNewTransaction(this.uuidUtils.createUuid(), transactionObject)
+                .then(postQueueObject => {
+                    return this.doTransactionOnRepository(postQueueObject.transactionObject).then(transcationObject => {
+                        postQueueObject.ackFunk();
+                        return transactionObject;
+                    });
+                });
         } else {
             return Promise.reject(null);
         }
