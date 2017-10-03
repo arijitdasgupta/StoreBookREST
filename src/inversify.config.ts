@@ -25,7 +25,9 @@ import * as env from './env';
 
 const container = new Container();
 
+// Used to stop all HTTP I/O till all promises are resolved...
 container.bind<IOHalter>(TYPES.IOHalter).to(IOHalter).inSingletonScope();
+
 container.bind<SHA256Utils>(TYPES.SHA256Utils).toConstantValue(new SHA256Utils(env.passwordSecret));
 container.bind<UUIDUtils>(TYPES.UUIDUtils).toConstantValue(new UUIDUtils());
 container.bind<PostgreSQLPool>(TYPES.PostgreSQLPool).toConstantValue(new PostgreSQLPool(env.DatabaseUrl));
