@@ -37,14 +37,6 @@ export class TransactionsService {
         this.itemsRepository = itemsRepository;
     }
 
-    // CREATE TABLE TRANSACTIONS (
-    //     id serial PRIMARY KEY not null,
-    //     item_id integer REFERENCES ITEMS(id) not null,
-    //     transaction_type varchar(20) not null,
-    //     transaction_amount real not null,
-    //     transaction_description varchar(500)
-    //   );
-
     private transactionsMapper = (transaction:any):ITransactionObject => {
         return {
             id: transaction.id,

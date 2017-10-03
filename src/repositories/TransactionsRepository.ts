@@ -16,29 +16,7 @@ export class TransactionsRepository {
         this.dbClient = postgresClient.dbClient;
     }
 
-    // CREATE TABLE TRANSACTIONS (
-    //     id serial PRIMARY KEY not null,
-    //     item_id integer REFERENCES ITEMS(id) not null,
-    //     transaction_type varchar(20) not null,
-    //     transaction_amount real not null,
-    //     transaction_description varchar(500),
-    //     transaction_time timestamp default current_timestamp,
-    //   );
-
-    // CREATE TABLE ITEMS (
-    //     id serial PRIMARY KEY not null,
-    //     item_name varchar(256) not null,
-    //     item_description varchar(500),
-    //     item_quantity real not null,
-    //     item_quantity_unit varchar(50) not null,
-    //     item_alert_threshold real,
-    //     item_product_code varchar(100),
-    //     created timestamp default current_timestamp,
-    //     deleted BOOLEAN default FALSE
-    //   );
-
     // Refactor SQL query
-
     getAllTransactions = ():Promise<any> => {
         return this.dbClient.query(`SELECT 
             TRANSACTIONS.id as id, TRANSACTIONS.item_id as item_id, TRANSACTIONS.transaction_type as transaction_type, TRANSACTIONS.transaction_amount as transaction_amount, 

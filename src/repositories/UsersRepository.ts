@@ -23,14 +23,6 @@ export class UsersRepository {
 
     private returningColumns = '*';
 
-    // CREATE TABLE USERS (
-    //     id serial not null,
-    //     username varchar(256) unique,
-    //     passwd varchar(64),
-    //     created timestamp default current_timestamp,
-    //     active BOOLEAN
-    //   );
-
     private userUpdateObjectSpecs:IUpdateSpec[] = [
         {
             dbColumnName: 'username',

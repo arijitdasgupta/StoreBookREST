@@ -13,18 +13,6 @@ export class ItemsRepository {
 
     private returningColumns = '*';
 
-    // CREATE TABLE ITEMS (
-    //     id serial PRIMARY KEY not null,
-    //     item_name varchar(256) not null,
-    //     item_description varchar(500),
-    //     item_quantity real not null,
-    //     item_quantity_unit varchar(50) not null,
-    //     item_alert_threshold real,
-    //     item_product_code varchar(100),
-    //     created timestamp default current_timestamp,
-    //     deleted BOOLEAN default FALSE
-    //   );
-
     constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils) {
         this.dbClient = postgresClient.dbClient;
