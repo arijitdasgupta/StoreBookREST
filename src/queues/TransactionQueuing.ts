@@ -33,6 +33,7 @@ export class TransactionQueuing {
 
         ioHalter.addPromise(rabbitRxChannel.channelCreatePromise.then(channel => {
             this.rabbitRxChannel = channel;
+            this.rabbitRxChannel.prefetch(1);
             channel.assertQueue(Queues.transactionQueue);
             this.initiateConsumer();
         }));
@@ -53,6 +54,8 @@ export class TransactionQueuing {
                 });
 
                 delete this.transactionHashtable[msgObject.uuid];
+            } else {
+                this.rabbitRxChannel.nack(msg, true);
             }
         });
     }
