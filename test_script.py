@@ -1,6 +1,7 @@
 import requests
 
 url = "https://sleepy-wave-20642.herokuapp.com/transactions"
+# url = "http://localhost:5000/transactions"
 
 payload = "{\n\t\"itemId\": 1,\n\t\"changeType\": \"DECREMENT\",\n\t\"quantity\": 1\n}"
 headers = {
