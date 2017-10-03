@@ -1,1 +1,1 @@
-web: npm run start -- --debug=5858
+web: npm run build; npm run start -- --debug=5858
