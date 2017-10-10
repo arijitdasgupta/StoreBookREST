@@ -1,6 +1,5 @@
 import { injectable, inject } from 'inversify';
 import { Client } from 'pg';
-import getDecorators from 'inversify-inject-decorators';
 
 import { PostgresClient } from '../db/PostgresClient';
 import { ITransactionObject } from '../services/TransactionsService';
