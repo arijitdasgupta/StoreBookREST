@@ -78,6 +78,8 @@ export class TransactionsService {
                 newQuantity += transaction.quantity;
             } else if (transaction.changeType === TransactionTypes.DECREMENT) {
                 newQuantity -= transaction.quantity;
+            } else if (transaction.changeType === TransactionTypes.RESET) {
+                newQuantity = transaction.quantity;
             }
             return this.itemsRepository.updateItemQuantity(transaction.itemId, newQuantity);
         });
@@ -93,12 +95,12 @@ export class TransactionsService {
 
     private doTransactionOnQueue = (transactionObject:ITransactionObject):Promise<ITransactionObject> => {
         return this.transacationQueuing.createNewTransaction<ITransactionObject>(this.uuidUtils.createUuid(), transactionObject)
-        .then(postQueueObject => {
-            return this.doTransactionOnRepository(postQueueObject.transactionObject).then(newTransactionObject => {
-                postQueueObject.ackFunk();
-                return newTransactionObject;
+            .then(postQueueObject => {
+                return this.doTransactionOnRepository(postQueueObject.transactionObject).then(newTransactionObject => {
+                    postQueueObject.ackFunk();
+                    return newTransactionObject;
+                });
             });
-        });
     }
 
     getTransaction = (transactionId:number):Promise<ITransactionObject> => {

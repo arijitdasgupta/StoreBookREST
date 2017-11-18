@@ -14,7 +14,7 @@ export class UsersRepository {
     private updateQueryUtils: UpdateQueryUtils;
     private dbClient: Client;
 
-    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient, 
+    constructor(@inject(TYPES.PostgresClient) postgresClient:PostgresClient,
         @inject(TYPES.SHA256Utils) sha256Utils:SHA256Utils,
         @inject(TYPES.UpdateQueryUtils) updateQueryUtils:UpdateQueryUtils,
         @inject(TYPES.IOHalter) ioHalter:IOHalter) {
@@ -48,6 +48,11 @@ export class UsersRepository {
             dbColumnName: 'role',
             objectKey: 'role',
             mapper: (item) => item
+        },
+        {
+            dbColumnName: 'email',
+            objectKey: 'email',
+            mapper: (item) => item
         }
     ];
 
@@ -67,11 +72,12 @@ export class UsersRepository {
     };
 
     createUser = (userObject:IUserObjectCreate):Promise<any[]> => {
-        return this.dbClient.query(`INSERT INTO USERS (username, passwd, active, role) VALUES($1, $2, $3, $4) RETURNING ${this.returningColumns}`, [
-            userObject.username, 
-            this.sha256Utils.makeHashFromPassword(userObject.password), 
+        return this.dbClient.query(`INSERT INTO USERS (username, passwd, active, role, email) VALUES($1, $2, $3, $4, $5) RETURNING ${this.returningColumns}`, [
+            userObject.username,
+            this.sha256Utils.makeHashFromPassword(userObject.password),
             true,
-            userObject.role]).then((data) => {
+            userObject.role,
+            userObject.email]).then((data) => {
                 return data.rows;
             });
     };

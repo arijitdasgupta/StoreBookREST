@@ -18,6 +18,7 @@ export interface IUserObjectCreate {
     username: string;
     password: string;
     role: 'ADMIN' | 'MANAGER' | 'OPERATOR';
+    email: string;
 }
 
 @injectable()
@@ -38,7 +39,8 @@ export class UsersService {
             username: user.username,
             active: user.active,
             created: user.created,
-            role: user.role
+            role: user.role,
+            email: user.email
         } as IUserObject;
     }
 
